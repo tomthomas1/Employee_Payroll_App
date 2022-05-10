@@ -22,4 +22,6 @@ public interface IEmployeePayrollService {
     ResponseEntity<ResponseDTO> createEmployeePayrollData(EmployeePayrollDTO empPayrollDTO);
 
     ResponseEntity<ResponseDTO> getEmployeePayrollDataById(Optional<Integer> empId) throws EmployeeNotFound;
+
+    ResponseEntity<ResponseDTO> findEmployeeByDept(String dept) throws EmployeeNotFound;
 }

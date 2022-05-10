@@ -50,4 +50,10 @@ public class EmployeePayrollController {
         return employeePayrollService.deleteEmployeePayrollData(empId);
     }
 
+    // This will return a list of all the employees with the department specified in the request
+    @GetMapping("/find/{dept}")
+    public ResponseEntity<ResponseDTO> findEmployeeDept(@PathVariable String dept) throws EmployeeNotFound {
+        return employeePayrollService.findEmployeeByDept(dept);
+    }
+
 }

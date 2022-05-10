@@ -65,7 +65,6 @@ public class EmployeePayrollServiceImpl implements IEmployeePayrollService {
         }
     }
 
-
     // This will update an existing employee in the database. If it doesn't find the
     // record of the given id it will
     // throw a custom exception. Which is handled by our custom exception handler.
@@ -92,5 +91,17 @@ public class EmployeePayrollServiceImpl implements IEmployeePayrollService {
             return new ResponseEntity<ResponseDTO>(new ResponseDTO(" Employee record deleted!", null), HttpStatus.OK);
         } else
             throw new EmployeeNotFound("ERROR: No such employee record found!");
+    }
+
+    @Override
+    public ResponseEntity<ResponseDTO> findEmployeeByDept(String dept) throws EmployeeNotFound {
+        List<EmployeePayrollData> employee = employeePayrollRepository.findEmployeeByDepartment(dept);
+
+        if (employee.size() == 0) {
+            throw new EmployeeNotFound("ERROR: No such employee record found!");
+        }
+
+        ResponseDTO response = new ResponseDTO(" Showing all employee records with the requested department", employee);
+        return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
     }
 }
