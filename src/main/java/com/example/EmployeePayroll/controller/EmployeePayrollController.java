@@ -6,13 +6,12 @@ import com.example.EmployeePayroll.exception.EmployeeNotFound;
 import com.example.EmployeePayroll.model.EmployeePayrollData;
 import com.example.EmployeePayroll.service.IEmployeePayrollService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/employee")
@@ -21,43 +20,34 @@ public class EmployeePayrollController {
     @Autowired
     private IEmployeePayrollService employeePayrollService;
 
+    // This will call the service layer to create a new employee record in the database
     @PostMapping("/create")
     public ResponseEntity<ResponseDTO> addEmployeePayrollData(@Valid @RequestBody EmployeePayrollDTO empPayrollDTO) {
-        EmployeePayrollData employeePayrollData = null;
-        employeePayrollData = employeePayrollService.createEmployeePayrollData(empPayrollDTO);
-        ResponseDTO responseDTO = new ResponseDTO("Created employee Payroll data successfully", employeePayrollData);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        return  employeePayrollService.createEmployeePayrollData(empPayrollDTO);
     }
 
+    // This call will list all the employee in the database
     @RequestMapping(value = {"/list"})
-    public ResponseEntity<ResponseDTO> getEmployeePayrollData() {
-        List<EmployeePayrollData> employeePayrollDataList = null;
-        employeePayrollDataList = employeePayrollService.getEmployeePayrollData();
-        ResponseDTO respDTO = new ResponseDTO("Get call Success", employeePayrollDataList);
-        return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
+    public List<EmployeePayrollData> getEmployeePayrollData() {
+        return employeePayrollService.getEmployeePayrollData();
     }
 
+    // This will call the service layer to get an employee we search for by id
     @GetMapping("/get/{empId}")
-    public ResponseEntity<ResponseDTO> getEmployeePayrolIData(@PathVariable(value = "empId") int empId) throws EmployeeNotFound {
-        EmployeePayrollData employeePayrollData = null;
-        employeePayrollData=employeePayrollService.getEmployeePayrollDataById(empId);
-        ResponseDTO respDTO = new ResponseDTO("Get Call Success for id successful ", employeePayrollData);
-        return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
+    public ResponseEntity<ResponseDTO> getEmployeePayrolIData(@PathVariable Optional<Integer> empId) throws EmployeeNotFound {
+        return employeePayrollService.getEmployeePayrollDataById(empId);
     }
 
+    // This will call the service layer to update an employee record
     @PutMapping("/update/{empId}")
     public ResponseEntity<ResponseDTO> updateEmployeePayrollData(@PathVariable int empId,@Valid @RequestBody EmployeePayrollDTO empPayrollDTO) throws EmployeeNotFound {
-        EmployeePayrollData employeePayrollData = null;
-        employeePayrollData = employeePayrollService.updateEmployeePayrollData(empId,empPayrollDTO);
-        ResponseDTO responseDTO = new ResponseDTO("Updated employee Payroll data successfully", employeePayrollData);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        return employeePayrollService.updateEmployeePayrollData(empId,empPayrollDTO);
     }
 
+    //This will delete an employee record, specified by id, from the database
     @DeleteMapping("/delete/{empId}")
-    public ResponseEntity<ResponseDTO> deleteEmployeePayrollData(@PathVariable("empId") int empId) {
-        employeePayrollService.deleteEmployeePayrollData(empId);
-        ResponseDTO responseDTO = new ResponseDTO("Deleted successfully","Deleted id: "+empId);
-        return new  ResponseEntity<>(responseDTO,HttpStatus.OK);
+    public  ResponseEntity<ResponseDTO> deleteEmployeePayrollData(@PathVariable("empId") int empId) throws EmployeeNotFound {
+        return employeePayrollService.deleteEmployeePayrollData(empId);
     }
 
 }
